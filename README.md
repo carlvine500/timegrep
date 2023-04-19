@@ -81,7 +81,7 @@ CC=x86_64-alpine-linux-musl-gcc  USER_CFLAGS=-m64 USER_LDFLAGS='-static -lintl -
 cp timgrep /tmp
 ```
 
-### example
+### example (commit by Fe)
 ```
 echo '{"instant":{"epochSecond":1681732800,"nanoOfSecond":"20:00:00"}}
 {"instant":{"epochSecond":1681732806,"nanoOfSecond":"20:00:06"}}
