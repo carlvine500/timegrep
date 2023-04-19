@@ -63,3 +63,20 @@ See [strptime(3)](https://linux.die.net/man/3/strptime) for format details. See 
 * Proofreading README.md or man page with your native language;
 * Share, Like, RT to your friends;
 * Send PRs if you are developer.
+
+## compile in alpine
+```
+docker run -it -v$(pwd):/tmp --rm alpine:3.15 sh   
+echo "https://mirrors.aliyun.com/alpine/v3.15/main/" > /etc/apk/repositories \
+    && echo "https://mirrors.aliyun.com/alpine/v3.15/community/" >> /etc/apk/repositories \
+    && apk update ;
+
+apk add gettext-dev pcre-dev g++ gcc make glib-static
+wget https://codeload.github.com/abbat/timegrep/zip/refs/tags/v0.7 -O timegrep.zip
+unzip timegrep.zip 
+cd timegrep-0.7
+
+CC=x86_64-alpine-linux-musl-gcc  USER_CFLAGS=-m64 USER_LDFLAGS='-static -lintl -Wl,-melf_x86_64' make
+
+cp timgrep /tmp
+```
