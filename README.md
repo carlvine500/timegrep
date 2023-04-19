@@ -80,3 +80,13 @@ CC=x86_64-alpine-linux-musl-gcc  USER_CFLAGS=-m64 USER_LDFLAGS='-static -lintl -
 
 cp timgrep /tmp
 ```
+
+### example
+```
+echo '{"instant":{"epochSecond":1681732800,"nanoOfSecond":"20:00:00"}}
+{"instant":{"epochSecond":1681732806,"nanoOfSecond":"20:00:06"}}
+{"instant":{"epochSecond":1681732806,"nanoOfSecond":"20:00:06"}}
+{"instant":{"epochSecond":1681732807,"nanoOfSecond":"20:00:07"}}
+{"instant":{"epochSecond":1681733862,"nanoOfSecond":"20:17:42"}}' | tee x.log
+ ./timegrep timegrep --start="2023-03-01 00:00:00" --format=json_timestamp x.log                    
+```
