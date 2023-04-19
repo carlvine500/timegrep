@@ -92,6 +92,11 @@ static const struct {
         "%Y-%m-%d %H:%M:%S"
     },
     {
+        "json_timestamp",
+        NULL,
+        "%J"
+    },
+    {
         "iso",
         NULL,
         "%Y-%m-%dT%H:%M:%S%z"
@@ -367,7 +372,7 @@ static size_t tg_strptime_regex_nsc(const char* format, char* regex, int* fallba
                     part = "([1-2][0-9][0-9]|3[0-5][0-9]|36[0-6]|0?[1-9][0-9]|0{0,2}[1-9])";
                     *fallback = 1;
                     break;
-
+                
                 /* The month number (1-12) */
                 case 'm':
                     part = "(?P<month>1[0-2]|0?[1-9])";
@@ -535,6 +540,11 @@ static size_t tg_strptime_regex_nsc(const char* format, char* regex, int* fallba
                     nsc->timestamp++;
                     break;
 
+                case 'J':
+                    part = "\\{\"instant\":\\{\"epochSecond\"\\:(?P<timestamp>\\d{10})";
+                    nsc->timestamp++;
+                    break;
+
                 default:
                     errno = 0;
                     fprintf(stderr, gettext("%s Unexpected format char '%c'\n"), gettext("ERROR:"), c);
@@ -542,6 +552,9 @@ static size_t tg_strptime_regex_nsc(const char* format, char* regex, int* fallba
             }
 
             if (part != NULL) {
+
+                /*printf("part: %s\n", part);*/
+
                 part_length = strlen(part);
                 if (regex != NULL)
                     memcpy(&regex[regex_index], part, part_length);
@@ -1023,7 +1036,7 @@ static int tg_get_string(
     else
         *start = (size_t)(nl - data) + 1;
 
-    nl = memchr(data + position, '\n', size - position);
+nl = memchr(data + position, '\n', size - position);
     if (nl == NULL)
         *length = size - (*start);
     else
@@ -1106,7 +1119,7 @@ static int tg_binary_search(
     retval = TG_NOT_FOUND;
     ubound = size;
     middle = lbound + (ubound - lbound) / 2;
-
+    
     while (lbound != middle) {
         result = tg_forward_search(
             data,
@@ -1460,6 +1473,7 @@ int tg_parse_options(int argc, char* argv[], tg_context* ctx)
     if (tg_strptime_regex(ctx->parser.format, regex, &ctx->parser.format_tz, &ctx->parser.fallback) == SIZE_MAX)
         goto ERROR;
 
+    /*printf("regex: %s\n", regex);*/
     ctx->parser.re = pcre_compile(regex, PCRE_UTF8 | PCRE_DUPNAMES, &pcre_error, &pcre_offset, NULL);
     if (ctx->parser.re == NULL) {
         errno = 0;
